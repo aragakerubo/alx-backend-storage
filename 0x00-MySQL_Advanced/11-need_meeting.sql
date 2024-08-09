@@ -9,9 +9,8 @@
 -- AND no last_meeting date OR more than a month
 
 CREATE VIEW need_meeting AS
-SELECT students.name
+SELECT name
 FROM students
-LEFT JOIN meetings
-ON students.id = meetings.student_id
-WHERE students.score < 80
-AND (meetings.last_meeting IS NULL OR meetings.last_meeting < DATE_SUB(NOW(), INTERVAL 1 MONTH));
+WHERE score < 80
+AND (last_meeting IS NULL OR 
+    last_meeting < ADDDATE(NOW(), INTERVAL -1 MONTH));
