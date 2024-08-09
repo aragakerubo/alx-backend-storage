@@ -9,6 +9,8 @@
 
 -- Calculate-Weighted-Average
 
+DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUsers;
+
 DELIMITER $$
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
