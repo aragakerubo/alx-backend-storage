@@ -8,4 +8,4 @@
 -- Context: Index is not the solution for any performance issue,
 -- but well used, it’s really powerful!
 
-CREATE INDEX idx_name_first ON names (LEFT(name, 1));
+CREATE INDEX idx_name_first ON names (name, 1);
