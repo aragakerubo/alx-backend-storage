@@ -8,7 +8,10 @@
 -- Your script can be executed on any database
 
 SELECT band_name, 
-ABS(SUBSTRING_INDEX(lifespan, ' - ', 1) - SUBSTRING_INDEX(lifespan, ' - ', -1))
+    CASE
+        WHEN split IS NULL THEN 2022 - formed
+        ELSE split - formed
+    END
 AS lifespan
 FROM bands
 WHERE style LIKE '%Glam rock%'
