@@ -14,19 +14,20 @@ DROP PROCEDURE IF EXISTS ComputeAverageWeightedScoreForUsers;
 DELIMITER $$
 CREATE PROCEDURE ComputeAverageWeightedScoreForUsers()
 BEGIN
-  DECLARE user_id INT;
-  DECLARE done INT DEFAULT FALSE;
-  DECLARE cur CURSOR FOR SELECT id FROM users;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-  
-  OPEN cur;
-  read_loop: LOOP
-    FETCH cur INTO user_id;
-    IF done THEN
-      LEAVE read_loop;
-    END IF;
-    CALL ComputeAverageWeightedScoreForUser(user_id);
-  END LOOP;
-  CLOSE cur;
+  UPDATE users
+  SET average_weighted_score = (
+    SELECT AVG(weighted_score)
+    FROM (
+      SELECT
+        user_id,
+        SUM(score * weight) / SUM(weight) AS weighted_score
+      FROM
+        scores
+      GROUP BY
+        user_id
+    ) AS weighted_scores
+    WHERE
+      users.id = weighted_scores.user_id
+  );
 END$$
 DELIMITER ;
