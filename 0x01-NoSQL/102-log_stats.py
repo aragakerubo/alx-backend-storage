@@ -4,22 +4,14 @@ from pymongo import MongoClient
 
 
 def log_stats(mongo_collection):
-    """log stats"""
-    method = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-    print(f"{mongo_collection.estimated_document_count()} logs")
-    print("Methods:")
-    for m in method:
-        print(
-            f"\tmethod {m}: {mongo_collection.count_documents({'method': m})}"
-        )
-    print(
-        f"{mongo_collection.count_documents(
-            { 'method': 'GET', 'path': '/status' }
-            )} status check"
-    )
-
+    """Log stats"""
+    return mongo_collection.aggregate([
+        {"$sortByCount": "$ip"},
+        {"$limit": 10}
+    ])
 
 if __name__ == "__main__":
-    client = MongoClient('mongodb://127.0.0.1:27017')
-    log_stats(client.logs.nginx)
-    
+    client = MongoClient("mongodb://127.0.0.1:27017")
+    nginx = client.logs.nginx
+    for ip in log_stats(nginx):
+        print("[{}] {}".format(ip.get("_id"), ip.get("count")))
