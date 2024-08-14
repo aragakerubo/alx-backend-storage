@@ -4,13 +4,12 @@ from pymongo import MongoClient
 
 
 def top_students(mongo_collection):
-    """top students"""
+    """Top students"""
     return mongo_collection.aggregate(
         [
-            {"$unwind": "$topics"},
             {
-                "$group": {
-                    "_id": "$_id",
+                "$project": {
+                    "name": "$name",
                     "averageScore": {"$avg": "$topics.score"},
                 }
             },
@@ -21,4 +20,6 @@ def top_students(mongo_collection):
 
 if __name__ == "__main__":
     client = MongoClient("mongodb://127.0.0.1:27017")
-    top_students(client.my_db.students)
+    students = client.my_db.students
+    for student in top_students(students):
+        print(student)
