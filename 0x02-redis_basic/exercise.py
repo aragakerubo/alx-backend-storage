@@ -11,14 +11,14 @@ from typing import Union, Callable
 
 
 # 2. Incrementing values
-def count_calls(fn: Callable) -> Callable:
+def count_calls(method: Callable) -> Callable:
     """Count calls decorator"""
 
-    @wraps(fn)
+    @wraps(method)
     def wrapper(self, *args, **kwargs):
-        key = fn.__qualname__
+        key = method.__qualname__
         self._redis.incr(key)
-        return fn(self, *args, **kwargs)
+        return method(self, *args, **kwargs)
 
     return wrapper
 
