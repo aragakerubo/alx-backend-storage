@@ -38,25 +38,3 @@ def get_page(url: str) -> str:
         content = requests.get(url).text
         r.setex(key, 10, content)
     return content
-
-
-if __name__ == "__main__":
-    url = "http://slowwly.robertomurray.co.uk/delay/10000/url/https://www.google.com"
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
-    print(get_page(url))
