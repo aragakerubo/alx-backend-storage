@@ -23,6 +23,24 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+# 3. Storing lists
+def call_history(method: Callable) -> Callable:
+    """Call history decorator"""
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        input_key = method.__qualname__ + ":inputs"
+        output_key = method.__qualname__ + ":outputs"
+
+        self._redis.rpush(input_key, str(args))
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(output_key, str(output))
+
+        return output
+
+    return wrapper
+
+
 # 0. Writing strings to Redis
 class Cache:
     """Cache class"""
@@ -34,6 +52,8 @@ class Cache:
 
     # 2. Incrementing values
     @count_calls
+    # 3. Storing lists
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Store data in Redis"""
         key = str(uuid.uuid4())
