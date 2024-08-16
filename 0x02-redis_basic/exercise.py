@@ -9,10 +9,10 @@ import uuid
 from typing import Union, Callable
 
 
+# 0. Writing strings to Redis
 class Cache:
     """Cache class"""
 
-    # 0. Writing strings to Redis
     def __init__(self):
         """Constructor"""
         self._redis = redis.Redis()
