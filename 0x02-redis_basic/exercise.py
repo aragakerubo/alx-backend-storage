@@ -41,6 +41,23 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+# 4. Retrieving lists
+def replay(method: Callable) -> None:
+    """Replay decorator"""
+
+    r = redis.Redis()
+    method_name = method.__qualname__
+    inputs = r.lrange(method_name + ":inputs", 0, -1)
+    outputs = r.lrange(method_name + ":outputs", 0, -1)
+
+    print(
+        f"{method_name} was called {r.get(method_name).decode('utf-8')} times:"
+    )
+
+    for i, o in zip(inputs, outputs):
+        print(f"{method_name}(*{i.decode('utf-8')}) -> {o.decode('utf-8')}")
+
+
 # 0. Writing strings to Redis
 class Cache:
     """Cache class"""
