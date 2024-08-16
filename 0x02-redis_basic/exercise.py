@@ -9,6 +9,18 @@ import uuid
 from typing import Union, Callable
 
 
+# 2. Incrementing values
+def count_calls(fn: Callable) -> Callable:
+    """Count calls decorator"""
+
+    def wrapper(self, *args, **kwargs):
+        key = fn.__qualname__
+        self._redis.incr(key)
+        return fn(self, *args, **kwargs)
+
+    return wrapper
+
+
 # 0. Writing strings to Redis
 class Cache:
     """Cache class"""
@@ -18,6 +30,8 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    # 2. Incrementing values
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Store data in Redis"""
         key = str(uuid.uuid4())
